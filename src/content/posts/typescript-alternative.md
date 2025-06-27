@@ -1,7 +1,8 @@
 ---
 title: "TypeScript 없이도 견고한 React 코드 작성하기"
-date: "2024-12-18"
-readTime: "7분"
+date: "2025-06-27T14:20:00"
+readTime: ""
+category: "dev"
 tags: ["JavaScript", "React", "Best Practices", "JSDoc"]
 description: "TypeScript를 사용하지 않더라도 PropTypes와 JSDoc을 활용하여 견고한 React 코드를 작성하는 방법"
 ---

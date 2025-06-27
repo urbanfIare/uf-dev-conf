@@ -1,23 +1,95 @@
-import { format, formatDistanceToNow, parseISO } from 'date-fns';
-import { ko } from 'date-fns/locale';
-
 /**
- * 날짜를 한국어 형식으로 포맷팅
+ * 날짜를 yyyy-mm-dd 형식으로 포맷팅
  */
-export const formatDate = (date, formatString = 'yyyy년 MM월 dd일') => {
-  const dateObj = typeof date === 'string' ? parseISO(date) : date;
-  return format(dateObj, formatString, { locale: ko });
+export const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  
+  if (isNaN(date.getTime())) {
+    return dateString; // 유효하지 않은 날짜면 원본 반환
+  }
+  
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
 };
 
 /**
- * 상대적 시간 표시 (예: "3일 전")
+ * 현재 시간 기준으로 상대적 시간 계산 (개선된 버전)
  */
-export const formatRelativeTime = (date) => {
-  const dateObj = typeof date === 'string' ? parseISO(date) : date;
-  return formatDistanceToNow(dateObj, { 
-    addSuffix: true, 
-    locale: ko 
-  });
+export const getRelativeTime = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  
+  if (isNaN(date.getTime())) {
+    return dateString; // 유효하지 않은 날짜면 원본 반환
+  }
+  
+  const diffMs = now.getTime() - date.getTime();
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  const diffWeeks = Math.floor(diffDays / 7);
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  // 미래 날짜인 경우 (방금 작성한 글이면 방금 전으로 표시)
+  if (diffMs < 0) {
+    const futureDiffMs = Math.abs(diffMs);
+    const futureMinutes = Math.floor(futureDiffMs / (1000 * 60));
+    
+    // 5분 이내 미래라면 "방금 전"으로 표시 (시간대 차이나 약간의 오차 허용)
+    if (futureMinutes <= 5) {
+      return '방금 전';
+    }
+    return formatDate(dateString); // 그 외에는 절대 날짜로 표시
+  }
+
+  // 과거 날짜 처리
+  if (diffSeconds < 30) {
+    return '방금 전';
+  } else if (diffSeconds < 60) {
+    return '방금 전';
+  } else if (diffMinutes < 60) {
+    return `${diffMinutes}분 전`;
+  } else if (diffHours < 24) {
+    return `${diffHours}시간 전`;
+  } else if (diffDays < 7) {
+    return `${diffDays}일 전`;
+  } else if (diffWeeks < 4) {
+    return `${diffWeeks}주 전`;
+  } else if (diffMonths < 12) {
+    return `${diffMonths}개월 전`;
+  } else {
+    return `${diffYears}년 전`;
+  }
+};
+
+/**
+ * 오늘 날짜를 yyyy-mm-dd 형식으로 반환
+ */
+export const getTodayDate = () => {
+  const today = new Date();
+  return formatDate(today.toISOString());
+};
+
+/**
+ * 현재 시간을 포함한 오늘 날짜를 ISO 형식으로 반환
+ */
+export const getNowDateTime = () => {
+  return new Date().toISOString();
+};
+
+/**
+ * 상대적 시간과 절대 날짜를 함께 제공
+ */
+export const getTimeDisplay = (dateString) => {
+  return {
+    relative: getRelativeTime(dateString),
+    absolute: formatDate(dateString)
+  };
 };
 
 /**

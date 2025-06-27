@@ -63,6 +63,8 @@ function Footer() {
                   href="https://github.com"
                   className="social-link"
                   aria-label="GitHub"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <Github size={20} />
                 </a>
@@ -70,6 +72,8 @@ function Footer() {
                   href="https://linkedin.com"
                   className="social-link"
                   aria-label="LinkedIn"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <Linkedin size={20} />
                 </a>
@@ -77,6 +81,8 @@ function Footer() {
                   href="mailto:contact@grove.dev"
                   className="social-link"
                   aria-label="Email"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <Mail size={20} />
                 </a>

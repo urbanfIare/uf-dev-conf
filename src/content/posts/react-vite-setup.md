@@ -1,7 +1,8 @@
 ---
 title: "React와 Vite로 모던 개발 환경 구축하기"
-date: "2024-12-19"
-readTime: "8분"
+date: "2025-06-27T09:30:00"
+readTime: ""
+category: "dev"
 tags: ["React", "Vite", "Frontend", "Setup"]
 description: "Vite를 사용하여 빠르고 효율적인 React 개발 환경을 구축하는 완전한 가이드"
 ---

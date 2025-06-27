@@ -5,9 +5,12 @@ import {
   oneDark,
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { formatDate } from "../../utils/date";
+import { useRealTimeDate } from "../../hooks/useRealTimeDate";
 import "./BlogPost.css";
 
 function BlogPost({ post, onBack, isLoading }) {
+  const relativeTime = useRealTimeDate(post?.date, 30000); // 30초마다 업데이트
   if (isLoading) {
     return (
       <article className="blog-post">
@@ -53,11 +56,11 @@ function BlogPost({ post, onBack, isLoading }) {
           <div className="post-meta">
             <div className="meta-item">
               <Calendar size={16} />
-              <span>{post.date}</span>
+              <span>{formatDate(post.date)}</span>
             </div>
             <div className="meta-item">
               <Clock size={16} />
-              <span>{post.readTime}</span>
+              <span>{relativeTime}</span>
             </div>
           </div>
 
