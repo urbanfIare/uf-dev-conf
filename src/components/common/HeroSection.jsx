@@ -1,9 +1,13 @@
 import { TreePine, Users, Heart, Lightbulb } from "lucide-react";
+import { useVisitorCount } from "../../hooks/useVisitorCount";
 import "./HeroSection.css";
 
 function HeroSection() {
+  // 방문자 수 훅 사용
+  const { visitorCount, todayVisitors, isNewVisitor } = useVisitorCount();
+
   // 블로그 시작 날짜 (오늘 날짜)
-  const BLOG_START_DATE = new Date("2024-12-19");
+  const BLOG_START_DATE = new Date("2025-06-27");
   const DEV_START_DATE = new Date("2021-01-01"); // 개발 시작 날짜 (2021년 1월)
 
   // 현재 날짜
@@ -30,9 +34,6 @@ function HeroSection() {
   const timeDiff = today.getTime() - BLOG_START_DATE.getTime();
   const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-  // 방문자 수 (임시)
-  const visitorCount = 127;
-
   // 작성된 글 수 (임시)
   const postsCount = 2;
 
@@ -54,25 +55,35 @@ function HeroSection() {
             나무와 같이 꾸준히 성장하고 결실을 맺고 싶은 개발자입니다.
           </p>
 
+          {/* 새 방문자 환영 메시지 */}
+          {isNewVisitor && (
+            <div className="welcome-message">
+              🎉 Grove의 블로그에 처음 오신 것을 환영합니다!
+            </div>
+          )}
+
           <div className="hero-values">
             <div
               className="value-item"
-              title="나무처럼 뿌리깊게 차근차근 성장하는 개발자"
+              data-tooltip="나무처럼 뿌리깊게 차근차근 성장하는 개발자"
             >
               🌱 <span>꾸준한 성장</span>
             </div>
-            <div className="value-item" title="혼자가 아닌 함께 자라는 숲">
+            <div
+              className="value-item"
+              data-tooltip="혼자가 아닌 함께 자라는 숲"
+            >
               🤝 <span>함께하는 여정</span>
             </div>
             <div
               className="value-item"
-              title="다른 사람들이 쉬어갈 수 있는 그늘"
+              data-tooltip="다른 사람들이 쉬어갈 수 있는 그늘"
             >
               🏠 <span>따뜻한 쉼터</span>
             </div>
             <div
               className="value-item"
-              title="서로 도우며 성장하는 개발 생태계"
+              data-tooltip="서로 도우며 성장하는 개발 생태계"
             >
               💚 <span>따뜻한 공동체</span>
             </div>
@@ -85,16 +96,20 @@ function HeroSection() {
             <span className="stat-label">개발 경력</span>
           </div>
           <div className="stat-item">
-            <span className="stat-number">{postsCount}</span>
-            <span className="stat-label">작성한 글</span>
-          </div>
-          <div className="stat-item">
             <span className="stat-number">{daysDiff}</span>
             <span className="stat-label">블로그 운영</span>
           </div>
           <div className="stat-item">
-            <span className="stat-number">{visitorCount}</span>
-            <span className="stat-label">방문자 수</span>
+            <span className="stat-number">{postsCount}</span>
+            <span className="stat-label">작성한 글</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-number">{visitorCount.toLocaleString()}</span>
+            <span className="stat-label">총 방문자</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-number">{todayVisitors}</span>
+            <span className="stat-label">오늘 방문자</span>
           </div>
         </div>
       </div>

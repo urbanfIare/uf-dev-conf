@@ -5,9 +5,9 @@ export const BLOG_CONFIG = {
   subtitle: '함께 자라는 개발 숲',
   author: '노경환',
   description: '나무와 같이 성장하고 결실을 맺고 싶은 사람, 주변 사람들이 힘들 때 쉬어갈 수 있는 사람',
-  email: 'your-email@example.com',
-  github: 'https://github.com/yourusername',
-  linkedin: 'https://linkedin.com/in/yourusername',
+  email: 'ghroh0915@gmail.com',
+  github: 'https://github.com/urbanfIare',
+  linkedin: 'https://linkedin.com/in/gyeonghwan-roh-ab4a96261',
   startDate: '2021-01-01', // 개발 시작일
 };
 
