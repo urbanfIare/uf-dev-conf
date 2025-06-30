@@ -66,40 +66,51 @@ function generateExcerpt(content, maxLength = 150) {
 }
 
 /**
- * 모든 포스트 데이터를 가져오는 함수
+ * 모든 포스트 데이터를 가져오는 함수 (자동 감지)
  * @returns {Promise<Array>} 포스트 배열
  */
 export async function getAllPosts() {
-  // 사용할 수 있는 포스트 목록
-  const postSlugs = ['react-vite-setup', 'typescript-alternative', 'daily-reflection'];
   const posts = [];
 
-  for (const slug of postSlugs) {
-    try {
-      // 각 마크다운 파일을 동적으로 import
-      const module = await import(`../content/posts/${slug}.md?raw`);
-      const content = module.default;
-      
-      // frontmatter 파싱
-      const { metadata, content: markdownContent } = parseFrontMatter(content);
-      
-      // 포스트 객체 생성
-      const post = {
-        id: slug,
-        slug: slug,
-        title: metadata.title || '',
-        date: metadata.date || '',
-        readTime: metadata.readTime || '',
-        category: metadata.category || 'dev',
-        description: metadata.description || '',
-        tags: metadata.tags || [],
-        excerpt: generateExcerpt(markdownContent)
-      };
-      
-      posts.push(post);
-    } catch (error) {
-      console.error(`Error loading post ${slug}:`, error);
+  try {
+    // Vite의 import.meta.glob을 사용해서 모든 .md 파일 자동 감지
+    const postModules = import.meta.glob('../content/posts/*.md', { 
+      as: 'raw',
+      eager: false 
+    });
+
+    // 각 파일을 처리
+    for (const [path, moduleLoader] of Object.entries(postModules)) {
+      try {
+        // 파일 경로에서 slug 추출 (예: '../content/posts/react-vite-setup.md' -> 'react-vite-setup')
+        const slug = path.split('/').pop().replace('.md', '');
+        
+        // 마크다운 내용 로드
+        const content = await moduleLoader();
+        
+        // frontmatter 파싱
+        const { metadata, content: markdownContent } = parseFrontMatter(content);
+        
+        // 포스트 객체 생성
+        const post = {
+          id: slug,
+          slug: slug,
+          title: metadata.title || '',
+          date: metadata.date || '',
+          readTime: metadata.readTime || '',
+          category: metadata.category || 'dev',
+          description: metadata.description || '',
+          tags: metadata.tags || [],
+          excerpt: generateExcerpt(markdownContent)
+        };
+        
+        posts.push(post);
+      } catch (error) {
+        console.error(`Error loading post from ${path}:`, error);
+      }
     }
+  } catch (error) {
+    console.error('Error loading posts:', error);
   }
 
   return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -138,9 +149,21 @@ export async function getPostBySlug(postId) {
  */
 async function getMarkdownContent(postId) {
   try {
-    // Vite에서 동적 import로 마크다운 파일 불러오기
-    const module = await import(`../content/posts/${postId}.md?raw`);
-    const rawContent = module.default;
+    // 동적 import로 마크다운 파일 불러오기
+    const postModules = import.meta.glob('../content/posts/*.md', { 
+      as: 'raw',
+      eager: false 
+    });
+    
+    // 해당 postId에 맞는 파일 찾기
+    const targetPath = `../content/posts/${postId}.md`;
+    const moduleLoader = postModules[targetPath];
+    
+    if (!moduleLoader) {
+      throw new Error(`Post not found: ${postId}`);
+    }
+    
+    const rawContent = await moduleLoader();
     
     // frontmatter 파싱하여 본문만 추출
     const { content } = parseFrontMatter(rawContent);

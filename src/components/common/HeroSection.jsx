@@ -1,10 +1,14 @@
 import { TreePine, Users, Heart, Lightbulb } from "lucide-react";
 import { useVisitorCount } from "../../hooks/useVisitorCount";
+import { usePostCount } from "../../hooks/usePostCount";
 import "./HeroSection.css";
 
 function HeroSection() {
   // 방문자 수 훅 사용
   const { visitorCount, todayVisitors, isNewVisitor } = useVisitorCount();
+
+  // 포스트 개수 훅 사용
+  const { total: postsCount, isLoading: isPostsLoading } = usePostCount();
 
   // 블로그 시작 날짜 (오늘 날짜)
   const BLOG_START_DATE = new Date("2025-06-27");
@@ -33,9 +37,6 @@ function HeroSection() {
   // 블로그 운영 일자 계산
   const timeDiff = today.getTime() - BLOG_START_DATE.getTime();
   const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-  // 작성된 글 수 (임시)
-  const postsCount = 2;
 
   return (
     <section className="hero">
@@ -100,7 +101,9 @@ function HeroSection() {
             <span className="stat-label">블로그 운영</span>
           </div>
           <div className="stat-item">
-            <span className="stat-number">{postsCount}</span>
+            <span className="stat-number">
+              {isPostsLoading ? "..." : postsCount}
+            </span>
             <span className="stat-label">작성한 글</span>
           </div>
           <div className="stat-item">
